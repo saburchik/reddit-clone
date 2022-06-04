@@ -1,17 +1,18 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import PostBox from '../components/PostBox'
 
 const Home: NextPage = () => {
   return (
-    <div className="flex-1">
+    <div className='my-7 mx-auto max-w-5xl'>
       <Head>
         <title>Reddit Clone</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main>
-        <h1>main content</h1>
-      </main>
+      {/* PostBox */}
+      <PostBox />
+      <div className='flex'>{/* Feed */}</div>
     </div>
   )
 }
