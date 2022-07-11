@@ -14,6 +14,21 @@ type Post {
   subreddit_id: ID
   title: String
   username: String
+  votes: [Vote]
+    @materializer(
+      query: "getVotesByPostId"
+      arguments: [{ name: "post_id", field: "id" }]
+    )
+  comments: [Comment]
+    @materializer(
+      query: "getCommentByPostId"
+      arguments: [{ name: "post_id", field: "id" }]
+    )
+  subreddit: [Subreddit]
+    @materializer(
+      query: "getSubredditListById"
+      arguments: [{ name: "id", field: "subreddit_id" }]
+    )
 }
 
 type Subreddit {
@@ -34,8 +49,32 @@ type Query {
   getCommentList: [Comment]
     @dbquery(
       type: "postgresql"
-      schema: "public"
       table: "comment"
+      configuration: "postgresql_config"
+    )
+  getCommentByPostId(post_id: ID!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "comment" where "post_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+  getVotesByPostId(id: ID!): [Vote]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "vote" where "post_id" = $1
+      order by "created_at" desc
+      """
+      configuration: "postgresql_config"
+    )
+  getSubredditListById(id: ID!): [Subreddit]
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "subreddit" where "id" = $1
+      """
       configuration: "postgresql_config"
     )
   """
@@ -88,7 +127,13 @@ type Query {
       configuration: "postgresql_config"
     )
   getSubredditListByTopic(topic: String!): [Subreddit]
-    @dbquery(type: "postgresql", query: "", configuration: "postgresql_config")
+    @dbquery(
+      type: "postgresql"
+      query: """
+      select * from "subreddit" where "topic" = $1
+      """
+      configuration: "postgresql_config"
+    )
   getVoteList: [Vote]
     @dbquery(
       type: "postgresql"
@@ -111,8 +156,14 @@ type Mutation {
   ): Post
     @dbquery(
       type: "postgresql"
-      schema: "public"
       table: "post"
+      dml: INSERT
+      configuration: "postgresql_config"
+    )
+  insertSubreddit(topic: String!): Subreddit
+    @dbquery(
+      type: "postgresql"
+      table: "subreddit"
       dml: INSERT
       configuration: "postgresql_config"
     )
