@@ -15,8 +15,11 @@ type FormData = {
   postImage: string
   subreddit: string
 }
+type Props = {
+  subreddit?: string
+}
 
-const PostBox: FC = () => {
+const PostBox: FC<Props> = ({ subreddit }) => {
   const { data: session } = useSession()
   const [addPost] = useMutation(ADD_POST, {
     refetchQueries: [GET_ALL_POSTS, 'getPostList'],
@@ -41,7 +44,7 @@ const PostBox: FC = () => {
       } = await client.query({
         query: GET_SUBREDDIT_BY_TOPIC,
         variables: {
-          topic: formData.subreddit,
+          topic: subreddit || formData.subreddit,
         },
       })
 
@@ -116,7 +119,11 @@ const PostBox: FC = () => {
           type='text'
           disabled={!session}
           placeholder={
-            session ? 'Create a post by entering a title' : 'Sign in to post'
+            session
+              ? subreddit
+                ? `Create a post in /r${subreddit}`
+                : 'Create a post by entering a title'
+              : 'Sign in to post'
           }
         />
         <PhotographIcon
@@ -139,15 +146,19 @@ const PostBox: FC = () => {
               placeholder='Text (Optinal)'
             />
           </article>
-          <article className='flex items-center px-2'>
-            <h1 className='min-w-[90px]'>Subreddit:</h1>
-            <input
-              className='m-2 flex-1 bg-blue-50 p-2 outline-none'
-              {...register('subreddit', { required: true })}
-              type='text'
-              placeholder='i.e. Sport'
-            />
-          </article>
+
+          {!subreddit && (
+            <article className='flex items-center px-2'>
+              <h1 className='min-w-[90px]'>Subreddit:</h1>
+              <input
+                className='m-2 flex-1 bg-blue-50 p-2 outline-none'
+                {...register('subreddit', { required: true })}
+                type='text'
+                placeholder='i.e. Sport'
+              />
+            </article>
+          )}
+
           {imgBox && (
             <article className='flex items-center px-2'>
               <h1 className='min-w-[90px]'>Image URL:</h1>
