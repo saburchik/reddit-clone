@@ -8,15 +8,33 @@ import {
   ShareIcon,
 } from '@heroicons/react/solid'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import TimeAgo from 'react-timeago'
 import Avatar from './Avatar'
 import { Jelly } from '@uiball/loaders'
+import { useSession } from 'next-auth/react'
+import toast from 'react-hot-toast'
+import { useQuery } from '@apollo/client'
+import { GET_ALL_VOTES_BY_POST_ID } from '../graphql/queries'
 
 type Props = {
   post: Post
 }
 const Post = ({ post }: Props) => {
+  const [vote, setVote] = useState<boolean>(false)
+  const { data: session } = useSession()
+  const { data, loading } = useQuery(GET_ALL_VOTES_BY_POST_ID, {
+    variables: {
+      post_id: post?.id,
+    },
+  })
+
+  const upVote = async (isUpvote: boolean) => {
+    if (!session) {
+      toast("❗ You'll need to sing in to Vote!")
+    }
+  }
+
   if (!post) {
     return (
       <div className='flex w-full items-center justify-center p-10 text-xl'>
@@ -29,9 +47,15 @@ const Post = ({ post }: Props) => {
     <Link href={`/post/${post?.id}`}>
       <div className='flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border hover:border-gray-600'>
         <div className='flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400'>
-          <ArrowUpIcon className='voteButtons hover:text-red-400' />
+          <ArrowUpIcon
+            onClick={() => upVote(true)}
+            className='voteButtons hover:text-red-400'
+          />
           <p className='text-bold teext-xs text-black'>0</p>
-          <ArrowDownIcon className='voteButtons hover:text-blue-400' />
+          <ArrowDownIcon
+            onClick={() => upVote(false)}
+            className='voteButtons hover:text-blue-400'
+          />
         </div>
         <div className='p-3 pb-1'>
           <div className='flex items-center space-x-2'>
