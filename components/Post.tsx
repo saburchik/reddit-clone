@@ -8,32 +8,60 @@ import {
   ShareIcon,
 } from '@heroicons/react/solid'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TimeAgo from 'react-timeago'
 import Avatar from './Avatar'
 import { Jelly } from '@uiball/loaders'
 import { useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { GET_ALL_VOTES_BY_POST_ID } from '../graphql/queries'
+import { ADD_VOTE } from '../graphql/mutations'
 
 type Props = {
   post: Post
 }
 const Post = ({ post }: Props) => {
-  const [vote, setVote] = useState<boolean>(false)
+  const [vote, setVote] = useState<boolean | undefined>(false)
   const { data: session } = useSession()
-  const { data, loading } = useQuery(GET_ALL_VOTES_BY_POST_ID, {
+  const { data, loading, error } = useQuery(GET_ALL_VOTES_BY_POST_ID, {
     variables: {
       post_id: post?.id,
     },
   })
 
+  const [addVote] = useMutation(ADD_VOTE, {
+    refetchQueries: [GET_ALL_VOTES_BY_POST_ID, 'getVotesByPostId'],
+  })
+
   const upVote = async (isUpvote: boolean) => {
     if (!session) {
       toast("❗ You'll need to sing in to Vote!")
+      return
     }
+    if (vote && isUpvote) return
+    if (vote === false && !isUpvote) return
+    console.log('voting...', isUpvote)
+
+    await addVote({
+      variables: {
+        post_id: post.id,
+        username: session?.user?.name,
+        upvote: isUpvote,
+      },
+    })
   }
+
+  useEffect(() => {
+    const votes: Vote[] = data?.getVotesByPostId
+    const vote = votes?.find(
+      (vote) => vote.username == session?.user?.name
+    )?.upvote
+
+    setVote(vote)
+  }, [data])
+
+  const displayVotes = (data: any) => {}
 
   if (!post) {
     return (
@@ -49,12 +77,16 @@ const Post = ({ post }: Props) => {
         <div className='flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400'>
           <ArrowUpIcon
             onClick={() => upVote(true)}
-            className='voteButtons hover:text-red-400'
+            className={`voteButtons hover:text-red-400 ${
+              vote && 'text-red-400'
+            }`}
           />
           <p className='text-bold teext-xs text-black'>0</p>
           <ArrowDownIcon
             onClick={() => upVote(false)}
-            className='voteButtons hover:text-blue-400'
+            className={`voteButtons hover:text-blue-400 ${
+              vote === false && 'text-blue-400'
+            }`}
           />
         </div>
         <div className='p-3 pb-1'>
