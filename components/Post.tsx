@@ -61,7 +61,18 @@ const Post = ({ post }: Props) => {
     setVote(vote)
   }, [data])
 
-  const displayVotes = (data: any) => {}
+  const displayVotes = (data: any) => {
+    const votes: Vote[] = data?.getVotesByPostId
+    const displayNum = votes?.reduce(
+      (total, vote) => (vote.upvote ? (total += 1) : (total -= 1)),
+      0
+    )
+    if (votes?.length === 0) return 0
+    if (displayNum === 0) {
+      return votes[0]?.upvote ? +1 : -1
+    }
+    return displayNum
+  }
 
   if (!post) {
     return (
@@ -81,7 +92,7 @@ const Post = ({ post }: Props) => {
               vote && 'text-red-400'
             }`}
           />
-          <p className='text-bold teext-xs text-black'>0</p>
+          <p className='text-bold teext-xs text-black'>{displayVotes(data)}</p>
           <ArrowDownIcon
             onClick={() => upVote(false)}
             className={`voteButtons hover:text-blue-400 ${
