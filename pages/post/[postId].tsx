@@ -10,7 +10,9 @@ import Post from '../../components/Post'
 import { ADD_COMMENT } from '../../graphql/mutations'
 import { GET_POST_BY_POST_ID } from '../../graphql/queries'
 
-type FormData = { comment: string }
+type FormData = {
+	comment: string
+}
 
 const PostPage: FC = () => {
 	const router = useRouter()
@@ -53,7 +55,7 @@ const PostPage: FC = () => {
 		<div className='mx-auto my-7 max-w-5xl'>
 			<Post post={post}></Post>
 			{post ? (
-				<div className='-mt-1 rounded-b-md             border border-t-0 border-gray-300 bg-white p-5 pl-16'>
+				<div className='-mt-1 rounded-b-md border border-t-0 border-gray-300 bg-white p-5 pl-16'>
 					<p className='text-sm'>
 						Comment as{' '}
 						<span className='text-red-500'>{session?.user?.name}</span>

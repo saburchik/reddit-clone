@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import {
 	MenuIcon,
 	ChevronDownIcon,
@@ -20,8 +20,10 @@ import Link from 'next/link'
 
 function Header() {
 	const { data: session } = useSession()
+	const [nav, setNav] = useState<boolean>(false)
+
 	return (
-		<div className='sticky top-0 z-50 flex items-center bg-white px-4 py-2 shadow-sm'>
+		<div className='sticky top-0 z-50 flex h-14 items-center bg-white px-4 py-2 shadow-sm'>
 			<div className='relative h-10 w-20 flex-shrink-0 cursor-pointer'>
 				<Link href='/' passHref>
 					<Image
@@ -33,9 +35,23 @@ function Header() {
 				</Link>
 			</div>
 			<div className='mx-7 flex cursor-pointer items-center rounded p-2 outline-hidden outline-1 outline-gray-300 hover:outline xl:min-w-[300px]'>
-				<HomeIcon className='h-5 w-5' />
-				<p className='ml-2 hidden flex-1 lg:inline'>Home</p>
-				<ChevronDownIcon className='h-5 w-5' />
+				<div
+					className='flex w-full justify-between'
+					onClick={() => setNav((prevState: boolean) => !prevState)}
+				>
+					<div className='flex'>
+						<HomeIcon className='h-5 w-5' />
+						<p className='ml-2 hidden flex-1 lg:inline'>Home</p>
+					</div>
+					<ChevronDownIcon className='h-5 w-5' />
+				</div>
+				<div
+					className={`${
+						nav ? 'flex' : 'hidden'
+					} absolute top-[56px] left-[124px] h-[382px] min-w-[300px] cursor-default flex-col rounded-b border-x border-b bg-white`}
+				>
+					<h4 className='p-4'>Your Communities:</h4>
+				</div>
 			</div>
 
 			{/* Search box */}
@@ -56,7 +72,7 @@ function Header() {
 				<SparklesIcon className='icon' />
 				<GlobeIcon className='icon' />
 				<VideoCameraIcon className='icon' />
-				<hr className='h-10 border border-gray-100' />
+				<hr className='h-8 border-r border-[#6b7280]' />
 				<ChatIcon className='icon' />
 				<BellIcon className='icon' />
 				<PlusIcon className='icon' />
