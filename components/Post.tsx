@@ -17,6 +17,7 @@ import toast from 'react-hot-toast'
 import { useMutation, useQuery } from '@apollo/client'
 import { GET_ALL_VOTES_BY_POST_ID } from '../graphql/queries'
 import { ADD_VOTE } from '../graphql/mutations'
+import Image from 'next/image'
 
 type Props = {
 	post: Post
@@ -81,10 +82,9 @@ const Post = ({ post }: Props) => {
 			</div>
 		)
 	}
-
 	return (
 		<Link href={`/post/${post?.id}`} passHref>
-			<div className='flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border hover:border-gray-600'>
+			<a className='flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border hover:border-gray-600'>
 				<div className='flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400'>
 					<ArrowUpIcon
 						onClick={() => upVote(true)}
@@ -92,7 +92,7 @@ const Post = ({ post }: Props) => {
 							vote && 'text-red-400'
 						}`}
 					/>
-					<p className='text-bold teext-xs text-black'>{displayVotes(data)}</p>
+					<p className='text-bold text-xs text-black'>{displayVotes(data)}</p>
 					<ArrowDownIcon
 						onClick={() => upVote(false)}
 						className={`voteButtons hover:text-blue-400 ${
@@ -109,37 +109,48 @@ const Post = ({ post }: Props) => {
 									r/{post.subreddit[0]?.topic}{' '}
 								</span>
 							</Link>
-							• Posted by u/{post.username} <TimeAgo date={post.created_at} />
+							• Posted by{' '}
+							<span className='hover:underline'>u/{post.username}</span>{' '}
+							<TimeAgo date={post.created_at} />
 						</p>
 					</div>
 					<article className='py-4'>
 						<h2 className='text-xl font-semibold'>{post.title}</h2>
 						<p className='mt-2 text-sm font-light'>{post.body}</p>
 					</article>
-					<img className='w-full' src={post.image} alt='' />
-					<div className='flex space-x-4 text-gray-400'>
-						<div className='postButtons'>
+					{post.image ? (
+						<div className='relative min-h-[270px] w-full'>
+							<Image
+								className='w-full'
+								layout='fill'
+								src={post.image}
+								alt='image'
+							/>
+						</div>
+					) : null}
+					<ul className='flex space-x-4 pt-1 text-gray-400'>
+						<li className='postButtons'>
 							<ChatAltIcon className='h-6 w-6' />
 							<p className=''>{post.comments.length} Comments</p>
-						</div>
-						<div className='postButtons'>
+						</li>
+						<li className='postButtons'>
 							<GiftIcon className='h-6 w-6' />
 							<p className='hidden sm:inline'>Award</p>
-						</div>
-						<div className='postButtons'>
+						</li>
+						<li className='postButtons'>
 							<ShareIcon className='h-6 w-6' />
 							<p className='hidden sm:inline'>Share</p>
-						</div>
-						<div className='postButtons'>
+						</li>
+						<li className='postButtons'>
 							<BookmarkIcon className='h-6 w-6' />
 							<p className='hidden sm:inline'>Save</p>
-						</div>
-						<div className='postButtons'>
+						</li>
+						<li className='postButtons'>
 							<DotsHorizontalIcon className='h-6 w-6' />
-						</div>
-					</div>
+						</li>
+					</ul>
 				</div>
-			</div>
+			</a>
 		</Link>
 	)
 }

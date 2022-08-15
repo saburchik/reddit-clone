@@ -7,9 +7,17 @@
     @apply h-9 p-2 w-6 cursor-pointer rounded lg:w-9  lg:hover:bg-gray-200;
   }
   .voteButtons {
-    @apply h-6 w-6 rounded-md p-1 hover:bg-gray-200;
+    @apply h-5 w-5 rounded hover:bg-gray-200;
   }
   .postButtons {
-    @apply flex cursor-pointer items-center space-x-1 rounded-sm p-2 text-sm font-semibold hover:bg-gray-100;
+    @apply flex cursor-pointer items-center space-x-1 rounded p-2 text-sm font-semibold hover:bg-gray-200;
   }
+}
+
+.linear::before {
+      background: linear-gradient(0deg, rgba(0, 0, 0, .7) 0, transparent) !important; 
+      content: "";
+        height: 80px;
+        position: absolute;
+        width: 100%;
 }
