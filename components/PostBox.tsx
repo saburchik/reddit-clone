@@ -109,7 +109,7 @@ const PostBox: FC<Props> = ({ subreddit }) => {
 	return (
 		<form
 			onSubmit={onSubmit}
-			className=' rounded-md border border-gray-300 bg-white p-2'
+			className='rounded-md border border-gray-300 bg-white p-2'
 		>
 			<div className='flex items-center space-x-3'>
 				<Avatar />

@@ -8,6 +8,8 @@ module.exports = {
 			'avatars.mds.yandex.net',
 			'preview.redd.it',
 			'external-preview.redd.it',
+			'clipartart.com',
+			'webpulse.imgsmail.ru',
 		],
 	},
 }

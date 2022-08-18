@@ -26,7 +26,7 @@ function Header() {
 		<div className='sticky top-0 z-50 flex h-14 items-center bg-white px-4 py-2 shadow-sm'>
 			<div className='relative h-10 w-20 flex-shrink-0 cursor-pointer'>
 				<Link href='/' passHref>
-					<a>
+					<a className='absolute top-0 left-0 h-full w-full'>
 						<Image
 							objectFit='contain'
 							src='https://links.papareact.com/fqy'
@@ -38,14 +38,14 @@ function Header() {
 			</div>
 			<div className='mx-7 flex cursor-pointer items-center rounded p-2 outline-hidden outline-1 outline-gray-300 hover:outline xl:min-w-[300px]'>
 				<div
-					className='flex w-full justify-between'
+					className='flex w-full items-center justify-between'
 					onClick={() => setNav((prevState: boolean) => !prevState)}
 				>
 					<div className='flex'>
 						<HomeIcon className='h-5 w-5' />
 						<p className='ml-2 hidden flex-1 lg:inline'>Home</p>
 					</div>
-					<ChevronDownIcon className='h-5 w-5' />
+					<ChevronDownIcon className='ml-2 h-5 w-5' />
 				</div>
 				<div
 					className={`${
@@ -81,7 +81,7 @@ function Header() {
 				<SpeakerphoneIcon className='icon' />
 			</div>
 			<div className='ml-5 flex items-center lg:hidden'>
-				<MenuIcon className='icon' />
+				<MenuIcon className='icon p-0' />
 			</div>
 
 			{/* Sign in / Sign out */}

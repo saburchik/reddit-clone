@@ -21,8 +21,9 @@ import Image from 'next/image'
 
 type Props = {
 	post: Post
+	removeStyles?: boolean
 }
-const Post = ({ post }: Props) => {
+const Post = ({ post, removeStyles }: Props) => {
 	const [vote, setVote] = useState<boolean | undefined>(false)
 	const { data: session } = useSession()
 	const { data, loading, error } = useQuery(GET_ALL_VOTES_BY_POST_ID, {
@@ -82,9 +83,14 @@ const Post = ({ post }: Props) => {
 			</div>
 		)
 	}
+
+	const stl: string = removeStyles
+		? 'flex cursor-default rounded-md border border-gray-300 bg-white shadow-sm'
+		: 'flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border hover:border-gray-600'
+
 	return (
 		<Link href={`/post/${post?.id}`} passHref>
-			<a className='flex cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border hover:border-gray-600'>
+			<a className={stl}>
 				<div className='flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400'>
 					<ArrowUpIcon
 						onClick={() => upVote(true)}
@@ -100,17 +106,19 @@ const Post = ({ post }: Props) => {
 						}`}
 					/>
 				</div>
-				<div className='p-3 pb-1'>
+				<div className='w-full p-3 pb-1'>
 					<div className='flex items-center space-x-2'>
 						<Avatar seed={post.subreddit[0]?.topic} />
 						<p className='text-xs text-gray-400'>
 							<Link href={`/subreddit/${post.subreddit[0]?.topic}`} passHref>
-								<span className='font-bold text-black hover:text-blue-400 hover:underline   '>
+								<span className='cursor-pointer font-bold text-black hover:text-blue-400 hover:underline'>
 									r/{post.subreddit[0]?.topic}{' '}
 								</span>
 							</Link>
 							• Posted by{' '}
-							<span className='hover:underline'>u/{post.username}</span>{' '}
+							<span className='cursor-pointer hover:underline'>
+								u/{post.username}
+							</span>{' '}
 							<TimeAgo date={post.created_at} />
 						</p>
 					</div>
@@ -119,12 +127,14 @@ const Post = ({ post }: Props) => {
 						<p className='mt-2 text-sm font-light'>{post.body}</p>
 					</article>
 					{post.image ? (
-						<div className='relative min-h-[270px] w-full'>
+						<div className='relative top-0 left-0 w-full'>
 							<Image
-								className='w-full'
-								layout='fill'
+								priority
+								layout='responsive'
 								src={post.image}
 								alt='image'
+								height={300}
+								width={500}
 							/>
 						</div>
 					) : null}
