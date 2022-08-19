@@ -17,10 +17,24 @@ import {
 } from '@heroicons/react/outline'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
+import SubredditRow from './SubredditRow'
+import { useQuery } from '@apollo/client'
+import { GET_SUBREDDITS_WITH_LIMIT } from '../graphql/queries'
 
 function Header() {
 	const { data: session } = useSession()
 	const [nav, setNav] = useState<boolean>(false)
+	const { data } = useQuery(GET_SUBREDDITS_WITH_LIMIT, {
+		variables: {
+			limit: 10,
+		},
+	})
+
+	const subreddits: Subreddit[] = data?.getSubredditListLimit
+
+	const removeStyles = nav
+		? 'mx-7 flex cursor-pointer items-center rounded-t border border-1 border-b-white xl:min-w-[300px]'
+		: 'mx-7 flex cursor-pointer items-center rounded border border-white hover:border-gray-300 xl:min-w-[300px]'
 
 	return (
 		<div className='sticky top-0 z-50 flex h-14 items-center bg-white px-4 py-2 shadow-sm'>
@@ -36,9 +50,9 @@ function Header() {
 					</a>
 				</Link>
 			</div>
-			<div className='mx-7 flex cursor-pointer items-center rounded p-2 outline-hidden outline-1 outline-gray-300 hover:outline xl:min-w-[300px]'>
+			<div className={removeStyles}>
 				<div
-					className='flex w-full items-center justify-between'
+					className='flex w-full items-center justify-between p-2'
 					onClick={() => setNav((prevState: boolean) => !prevState)}
 				>
 					<div className='flex'>
@@ -50,9 +64,18 @@ function Header() {
 				<div
 					className={`${
 						nav ? 'flex' : 'hidden'
-					} absolute top-[56px] left-[124px] h-[382px] min-w-[300px] cursor-default flex-col rounded-b border-x border-b bg-white`}
+					} absolute top-[46px] left-[124px] h-[282px] min-w-[300px] cursor-auto flex-col overflow-x-hidden overflow-y-scroll rounded-b border-x border-b bg-white`}
 				>
 					<h4 className='p-4'>Your Communities:</h4>
+					<ol>
+						{subreddits?.map((subreddit, i) => (
+							<SubredditRow
+								key={subreddit.id}
+								topic={subreddit.topic}
+								index={i}
+							/>
+						))}
+					</ol>
 				</div>
 			</div>
 
