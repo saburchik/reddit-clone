@@ -32,6 +32,8 @@ const Post = ({ post, removeStyles }: Props) => {
 		},
 	})
 
+	console.log(session)
+
 	const [addVote] = useMutation(ADD_VOTE, {
 		refetchQueries: [GET_ALL_VOTES_BY_POST_ID, 'getVotesByPostId'],
 	})

@@ -20,6 +20,7 @@ import Link from 'next/link'
 import SubredditRow from './SubredditRow'
 import { useQuery } from '@apollo/client'
 import { GET_SUBREDDITS_WITH_LIMIT } from '../graphql/queries'
+import logo from '../public/logo.png'
 
 function Header() {
 	const { data: session } = useSession()
@@ -41,12 +42,7 @@ function Header() {
 			<div className='relative h-10 w-20 flex-shrink-0 cursor-pointer'>
 				<Link href='/' passHref>
 					<a className='absolute top-0 left-0 h-full w-full'>
-						<Image
-							objectFit='contain'
-							src='https://links.papareact.com/fqy'
-							layout='fill'
-							alt='logo'
-						/>
+						<Image objectFit='contain' src={logo} layout='fill' alt='logo' />
 					</a>
 				</Link>
 			</div>
